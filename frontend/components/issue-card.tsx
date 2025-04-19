@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Code, ThumbsDown, ThumbsUp } from "lucide-react"
+import { Code, ThumbsDown, ThumbsUp, Star, Lightbulb } from "lucide-react"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 
 interface Issue {
   id: number
@@ -24,6 +25,8 @@ export function IssueCard({ issue }: IssueCardProps) {
   const [isInterested, setIsInterested] = useState(null as boolean | null)
   const [isExpanded, setIsExpanded] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
+  const [isFavorite, setIsFavorite] = useState(false)
+  const router = useRouter()
 
   const getMatchColorClass = () => {
     if (issue.skillMatch >= 90) return "bg-purple-600"
@@ -42,6 +45,15 @@ export function IssueCard({ issue }: IssueCardProps) {
     setIsAnimating(true)
     setIsInterested(false)
     setTimeout(() => setIsAnimating(false), 600)
+  }
+
+  const handleMentor = () => {
+    router.push(`/mentor?issueID=${issue.id}`)
+  }
+
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsFavorite(!isFavorite)
   }
 
   return (
@@ -64,6 +76,22 @@ export function IssueCard({ issue }: IssueCardProps) {
             {issue.title}
           </a>
           <div className="flex items-center gap-2">
+            <motion.button
+              className={`p-1.5 rounded-full transition-colors ${
+                isFavorite 
+                  ? "text-yellow-400 bg-yellow-400/10" 
+                  : "text-gray-400 hover:text-yellow-400 hover:bg-yellow-400/10"
+              }`}
+              onClick={toggleFavorite}
+              whileTap={{ scale: 0.9 }}
+              animate={
+                isFavorite
+                  ? { scale: [1, 1.2, 1], transition: { duration: 0.3 } }
+                  : {}
+              }
+            >
+              <Star className="w-4 h-4" fill={isFavorite ? "currentColor" : "none"} />
+            </motion.button>
             <div className="w-24 h-2 bg-gray-700 rounded-full overflow-hidden">
               <div
                 className={`h-full ${getMatchColorClass()} transition-all duration-500`}
@@ -106,6 +134,17 @@ export function IssueCard({ issue }: IssueCardProps) {
           </div>
 
           <div className="flex gap-2">
+            <motion.button
+              className="px-3 py-1.5 rounded-lg bg-[#242a38] text-amber-400 hover:bg-amber-600/20 hover:text-amber-300 transition-colors"
+              onClick={handleMentor}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span className="flex items-center gap-1.5">
+                <Lightbulb className="w-4 h-4" />
+                Mentor
+              </span>
+            </motion.button>
+
             <motion.button
               className={`px-3 py-1.5 rounded-lg transition-colors ${
                 isInterested === true

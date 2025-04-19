@@ -1,22 +1,34 @@
 "use client"
 
+import { Github } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Github } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user, checkAuth } = useAuth()
 
-  // If user is already authenticated, redirect to home page
+  // Check authentication status on component mount
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/")
+    const checkAuthStatus = async () => {
+      const isAuth = await checkAuth()
+
+      if (isAuth && user) {
+        // If user has completed the skills test, redirect to match page
+        if (user.test_taken) {
+          router.push('/match')
+        } else {
+          // If user hasn't completed the skills test, redirect to skills page
+          router.push('/skills')
+        }
+      }
     }
+
+    checkAuthStatus()
 
     // Check for error query parameter (for failed login attempts)
     const urlParams = new URLSearchParams(window.location.search)
@@ -28,7 +40,7 @@ export default function LoginPage() {
           : "An error occurred during login. Please try again."
       )
     }
-  }, [isAuthenticated, router])
+  }, [router, checkAuth, user])
 
   const handleGitHubLogin = () => {
     setIsLoading(true)
@@ -36,10 +48,6 @@ export default function LoginPage() {
 
     // Redirect to the backend's GitHub OAuth login endpoint
     window.location.href = "http://localhost:8000/api/v1/auth/login"
-
-    // Note: The rest of this function won't execute due to the redirect
-    // The callback from GitHub will be handled by the backend and redirected
-    // to the frontend according to the FRONTEND_LOGIN_SUCCESS_URL in the backend
   }
 
   return (

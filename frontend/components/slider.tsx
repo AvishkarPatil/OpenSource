@@ -10,10 +10,10 @@ const slides = [
     description:
       "AI-powered matching connects developers with ideal GitHub issues based on your skills, interests, and contribution history.",
     stats: [
-      { value: "5,000+", label: "Developers" },
-      { value: "30,000+", label: "Issues Matched" },
-      { value: "7,500+", label: "Contributions Made" },
-      { value: "1,000+", label: "Repositories" },
+      { value: "4,318+", label: "Developers" },
+      { value: "27,894+", label: "Issues Matched" },
+      { value: "6,782+", label: "Contributions Made" },
+      { value: "1,143+", label: "Repositories" },
     ],
   },
   {

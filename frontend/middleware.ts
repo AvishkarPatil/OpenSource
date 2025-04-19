@@ -11,7 +11,8 @@ export function middleware(request: NextRequest) {
     path.startsWith("/static") ||
     path.includes(".") ||
     path === "/" ||
-    path === "/login"
+    path === "/login" ||
+    path === "/"
   ) {
     return NextResponse.next()
   }
@@ -20,7 +21,7 @@ export function middleware(request: NextRequest) {
   const hasSession = request.cookies.has("session")
 
   // If the user is not logged in and trying to access a protected route
-  if (!hasSession && path !== "/" && path !== "/login") {
+  if (!hasSession && path !== "/" && path !== "/login" && path !== "/") {
     return NextResponse.redirect(new URL("/login", request.url))
   }
 

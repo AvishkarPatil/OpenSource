@@ -28,7 +28,7 @@ export function IssuesList({ type }: IssuesListProps) {
 
   useEffect(() => {
     let isMounted = true
-    const MAX_LOADING_TIME = 20000 // 20 seconds maximum loading time
+    const MAX_LOADING_TIME = 25000 // 20 seconds maximum loading time
 
     // Function to fetch data
     const fetchData = async () => {

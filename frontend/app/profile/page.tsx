@@ -1,11 +1,10 @@
-// Assuming this file is something like pages/profile.tsx or app/profile/page.tsx
-
-"use client" // Required for hooks like useState, useEffect, useRouter in Next.js App Router
+"use client"
 
 import {useState, useEffect, JSX} from "react"
 import Link from "next/link"
+import Image from "next/image";
 import { useRouter } from "next/navigation"
-// Importing icons from lucide-react
+import { GitHubActivityGraph } from "@/components/github-activity-graph"
 import {
   User,
   FileText,
@@ -23,7 +22,6 @@ import {
   LogOut,
 } from "lucide-react"
 
-// Interface defining the expected structure of the GitHub profile data from the API
 interface GitHubProfile {
   login: string
   id: number
@@ -43,10 +41,9 @@ interface GitHubProfile {
   html_url: string
 }
 
-// Define structure for mock data for clarity
 interface Skill {
   name: string;
-  level: number; // e.g., 1-5 scale
+  level: number;
 }
 
 interface Stats {
@@ -58,33 +55,31 @@ interface Stats {
 
 interface Achievement {
   name: string;
-  icon: string; // Name of the Lucide icon component
+  icon: string;
   date: string;
 }
 
 // Profile Page Component
 export default function ProfilePage() {
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState("overview") // State for active tab
-  const [profile, setProfile] = useState<GitHubProfile | null>(null) // State for fetched profile data
-  const [loading, setLoading] = useState(true) // State for loading status
-  const [error, setError] = useState("") // State for error messages
+  const [activeTab, setActiveTab] = useState("overview")
+  const [profile, setProfile] = useState<GitHubProfile | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
-  // Mock data for parts not directly available from the basic GitHub /user endpoint
-  // In a real app, this might come from other API calls or calculations
   const mockData: { skills: Skill[]; stats: Stats; achievements: Achievement[]; resumeUploaded: boolean } = {
     skills: [
-      { name: "JavaScript", level: 4 },
-      { name: "React", level: 4 },
-      { name: "TypeScript", level: 3 },
-      { name: "Node.js", level: 3 },
+      { name: "JavaScript", level: 5 },
+      { name: "React", level: 4.2 },
+      { name: "TypeScript", level: 1 },
+      { name: "Node.js", level: 2 },
       { name: "CSS/Tailwind", level: 3 },
     ],
     stats: {
-      contributions: 247, // Example: Could potentially be calculated from event APIs
-      pullRequests: 86, // Example
-      issuesClosed: 53, // Example
-      stars: 128, // Example: Stars received on user's repos
+      contributions: 149,
+      pullRequests: 86,
+      issuesClosed: 53,
+      stars: 128,
     },
     achievements: [
       { name: "First Contribution", icon: "GitMerge", date: "Feb 2022" },
@@ -287,7 +282,7 @@ export default function ProfilePage() {
                   <h3 className="text-white font-medium">Skills (Mock)</h3>
                   {/* Link to edit/upload resume */}
                   <Link
-                    href="/profile/resume" // Adjust link as needed
+                    href="/resume" // Adjust link as needed
                     className="text-purple-400 hover:text-purple-300 text-sm flex items-center"
                   >
                     <Edit className="h-3 w-3 mr-1" />
@@ -315,27 +310,27 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Upload Resume Button (Conditional) */}
-                {!mockData.resumeUploaded && (
-                  <div className="mt-4">
-                    <Link
-                      href="/profile/resume" // Adjust link as needed
-                      className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 rounded-lg text-white font-medium transition-colors flex items-center justify-center text-sm" // Added text-sm
-                    >
-                      <FileText className="h-4 w-4 mr-2" />
-                      Upload Resume
-                    </Link>
-                  </div>
-                )}
+                {/*{!mockData.resumeUploaded && (*/}
+                {/*  <div className="mt-4">*/}
+                {/*    <Link*/}
+                {/*      href="/profile/resume" // Adjust link as needed*/}
+                {/*      className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 rounded-lg text-white font-medium transition-colors flex items-center justify-center text-sm" // Added text-sm*/}
+                {/*    >*/}
+                {/*      <FileText className="h-4 w-4 mr-2" />*/}
+                {/*      Upload Resume*/}
+                {/*    </Link>*/}
+                {/*  </div>*/}
+                {/*)}*/}
 
                 {/* Settings and Logout buttons */}
                 <div className="mt-6 pt-4 border-t border-gray-700 space-y-2"> {/* Added border */}
-                  <Link
-                    href="/settings" // Adjust link as needed
-                    className="w-full py-2 px-4 bg-[#242a38] hover:bg-[#2d3548] rounded-lg text-white font-medium transition-colors flex items-center justify-center text-sm"
-                  >
-                    <Settings className="h-4 w-4 mr-2" />
-                    Settings
-                  </Link>
+                  {/*<Link*/}
+                  {/*  href="/settings" // Adjust link as needed*/}
+                  {/*  className="w-full py-2 px-4 bg-[#242a38] hover:bg-[#2d3548] rounded-lg text-white font-medium transition-colors flex items-center justify-center text-sm"*/}
+                  {/*>*/}
+                  {/*  <Settings className="h-4 w-4 mr-2" />*/}
+                  {/*  Settings*/}
+                  {/*</Link>*/}
 
                   <button
                     onClick={handleLogout}
@@ -562,17 +557,8 @@ export default function ProfilePage() {
                 {/* Analytics Tab Content */}
                 {activeTab === "analytics" && (
                   <div>
-                    <h2 className="text-xl font-semibold text-white mb-4">Contribution Analytics (Mock)</h2>
-
-                    {/* Activity Overview Placeholder */}
-                    <div className="bg-[#242a38] rounded-lg p-6 mb-6 shadow-sm">
-                      <h3 className="text-lg font-medium text-white mb-4">Activity Overview</h3>
-                      <div className="h-64 flex items-center justify-center bg-[#1a1f2a] rounded-md"> {/* Added inner bg */}
-                        <div className="text-gray-400 text-center">
-                          <BarChart2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                          <p>Contribution heatmap/graph placeholder</p>
-                        </div>
-                      </div>
+                    <div className="bg-[#242a38] rounded-lg p-6 mb-6 shadow-sm h-80"> {/* Added h-64 to reduce height */}
+                        <GitHubActivityGraph height={170}/>
                     </div>
 
                     {/* Language & Time Grid */}
@@ -624,14 +610,17 @@ export default function ProfilePage() {
                         </div> {/* End language space-y-4 */}
                       </div> {/* End Top Languages Card */}
 
-                      {/* Contribution Times Card */}
+
                       <div className="bg-[#242a38] rounded-lg p-6 shadow-sm">
                         <h3 className="text-lg font-medium text-white mb-4">Contribution Times</h3>
-                        <div className="h-48 flex items-center justify-center bg-[#1a1f2a] rounded-md"> {/* Added inner bg */}
-                          <div className="text-gray-400 text-center">
-                            <p>Time-based contribution chart placeholder</p>
-                            <p className="text-sm mt-2">(e.g., Most active: Weekdays, 2PM - 6PM)</p>
-                          </div>
+                        <div className="h-48 flex items-center justify-center bg-[#1a1f2a] rounded-md overflow-hidden"> {/* Added overflow-hidden */}
+                          <Image
+                            src="https://i.ibb.co/SwB9Bpxy/heatmap.png"
+                            alt="Contribution times heatmap"
+                            width={400}
+                            height={200}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                       </div> {/* End Contribution Times Card */}
                     </div> {/* End Language & Time Grid */}

@@ -5,6 +5,7 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AuthProvider } from "@/context/auth-context"
 import { Toaster } from "@/components/ui/toaster"
+import IssueMatchAI from "@/components/issue-match-ai"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -25,6 +26,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Footer />
+          <IssueMatchAI />
           <Toaster />
         </AuthProvider>
       </body>

@@ -2,15 +2,16 @@
 
 import Link from "next/link"
 import { useAuth } from "@/context/auth-context"
-import { Github, Menu, X, Search, Bell, LogOut } from "lucide-react"
+import { Github, Menu, X, Search, Bell, LogOut, Home, User, Settings } from "lucide-react"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
+  const pathname = usePathname()
 
   const handleLogout = () => {
     // Instead of trying to fetch directly, redirect to the backend logout endpoint
@@ -30,32 +31,60 @@ export function Navbar() {
     }
   };
 
+  // Helper function to determine if a link is active
+  const isActive = (path: string) => {
+    return pathname === path;
+  };
+
   return (
-    <nav className="bg-[#161b22] border-b border-[#30363d]">
+    <nav className="bg-gradient-to-r from-[#161b22] to-[#1a1a2e] border-b border-[#30363d]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <Link href="/" className="text-white font-bold text-xl">
-                IssueMatch
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-purple-600">IssueMatch</span>
               </Link>
             </div>
             <div className="hidden sm:ml-10 sm:flex sm:space-x-8">
               <Link
+                href="/"
+                className={`${
+                  isActive('/') 
+                    ? "border-purple-500 text-white" 
+                    : "border-transparent text-gray-300 hover:border-purple-400 hover:text-white"
+                } inline-flex items-center px-1 pt-1 pb-1 border-b-2 text-base font-semibold transition-colors duration-200`}
+              >
+                <Home className="mr-1 h-4 w-4" />
+                Home
+              </Link>
+              <Link
                 href="/match"
-                className="border-transparent text-gray-300 hover:border-purple-500 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className={`${
+                  isActive('/match') 
+                    ? "border-purple-500 text-white" 
+                    : "border-transparent text-gray-300 hover:border-purple-400 hover:text-white"
+                } inline-flex items-center px-1 pt-1 pb-1 border-b-2 text-base font-semibold transition-colors duration-200`}
               >
                 Issues
               </Link>
               <Link
-                href="/explore"
-                className="border-transparent text-gray-300 hover:border-purple-500 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                href="/search"
+                className={`${
+                  isActive('/search') 
+                    ? "border-purple-500 text-white" 
+                    : "border-transparent text-gray-300 hover:border-purple-400 hover:text-white"
+                } inline-flex items-center px-1 pt-1 pb-1 border-b-2 text-base font-semibold transition-colors duration-200`}
               >
                 Explore
               </Link>
               <Link
                 href="/about"
-                className="border-transparent text-gray-300 hover:border-purple-500 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className={`${
+                  isActive('/about') 
+                    ? "border-purple-500 text-white" 
+                    : "border-transparent text-gray-300 hover:border-purple-400 hover:text-white"
+                } inline-flex items-center px-1 pt-1 pb-1 border-b-2 text-base font-semibold transition-colors duration-200`}
               >
                 About
               </Link>
@@ -78,7 +107,7 @@ export function Navbar() {
             </form>
 
             {/* Notification Icon */}
-            <button className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-[#30363d]">
+            <button className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-purple-900/30">
               <Bell className="h-5 w-5" />
             </button>
 
@@ -88,18 +117,18 @@ export function Navbar() {
                 <Link href="/profile" className="flex items-center space-x-2 text-gray-300 hover:text-white">
                   {user?.avatar_url && (
                     <img
-                      className="h-8 w-8 rounded-full"
+                      className="h-8 w-8 rounded-full border border-purple-500/30"
                       src={user.avatar_url}
                       alt={`${user.login}'s avatar`}
                     />
                   )}
-                  <span className="text-sm">{user?.login}</span>
+                  <span className="text-sm font-medium">{user?.login}</span>
                 </Link>
 
                 {/* Logout Button */}
                 <button
                   onClick={handleLogout}
-                  className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-[#30363d]"
+                  className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-purple-900/30"
                   title="Sign out"
                 >
                   <LogOut className="h-5 w-5" />
@@ -108,7 +137,7 @@ export function Navbar() {
             ) : (
               <button
                 onClick={handleLogin}
-                className="text-gray-300 hover:text-white flex items-center text-sm font-medium bg-[#238636] hover:bg-[#2ea043] px-3 py-1.5 rounded-md"
+                className="text-gray-300 hover:text-white flex items-center text-sm font-medium bg-purple-600 hover:bg-purple-700 px-3 py-1.5 rounded-md transition-colors duration-200"
               >
                 <Github className="mr-1.5 h-4 w-4" />
                 Sign in
@@ -119,7 +148,7 @@ export function Navbar() {
           <div className="flex items-center sm:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-[#30363d] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-purple-900/30 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500"
             >
               <span className="sr-only">Open main menu</span>
               {mobileMenuOpen ? (
@@ -138,19 +167,42 @@ export function Navbar() {
           <div className="pt-2 pb-3 space-y-1">
             <Link
               href="/"
-              className="text-gray-300 hover:bg-[#30363d] hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              className={`${
+                isActive('/') 
+                  ? "bg-purple-900/20 text-white" 
+                  : "text-gray-300 hover:bg-purple-900/10 hover:text-white"
+              } flex items-center px-3 py-2 rounded-md text-base font-medium`}
+            >
+              <Home className="mr-2 h-5 w-5" />
+              Home
+            </Link>
+            <Link
+              href="/match"
+              className={`${
+                isActive('/match') 
+                  ? "bg-purple-900/20 text-white" 
+                  : "text-gray-300 hover:bg-purple-900/10 hover:text-white"
+              } block px-3 py-2 rounded-md text-base font-medium`}
             >
               Issues
             </Link>
             <Link
-              href="/explore"
-              className="text-gray-300 hover:bg-[#30363d] hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              href="/search"
+              className={`${
+                isActive('/search') 
+                  ? "bg-purple-900/20 text-white" 
+                  : "text-gray-300 hover:bg-purple-900/10 hover:text-white"
+              } block px-3 py-2 rounded-md text-base font-medium`}
             >
               Explore
             </Link>
             <Link
               href="/about"
-              className="text-gray-300 hover:bg-[#30363d] hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              className={`${
+                isActive('/about') 
+                  ? "bg-purple-900/20 text-white" 
+                  : "text-gray-300 hover:bg-purple-900/10 hover:text-white"
+              } block px-3 py-2 rounded-md text-base font-medium`}
             >
               About
             </Link>
@@ -178,7 +230,7 @@ export function Navbar() {
                 {user?.avatar_url && (
                   <div className="flex-shrink-0">
                     <img
-                      className="h-10 w-10 rounded-full"
+                      className="h-10 w-10 rounded-full border border-purple-500/30"
                       src={user.avatar_url}
                       alt={`${user.login}'s avatar`}
                     />
@@ -188,23 +240,31 @@ export function Navbar() {
                   <div className="text-base font-medium text-white">{user?.name || user?.login}</div>
                   <div className="text-sm font-medium text-gray-400">{user?.login}</div>
                 </div>
-                <button className="ml-auto text-gray-400 hover:text-white p-1 rounded-full hover:bg-[#30363d]">
+                <button className="ml-auto text-gray-400 hover:text-white p-1 rounded-full hover:bg-purple-900/30">
                   <Bell className="h-5 w-5" />
                 </button>
               </div>
             ) : null}
-            <div className="mt-3 space-y-1">
+                        <div className="mt-3 space-y-1">
               {isAuthenticated ? (
                 <>
                   <Link
                     href="/profile"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-[#30363d]"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-purple-900/20 flex items-center"
                   >
+                    <User className="mr-2 h-5 w-5" />
                     Your Profile
+                  </Link>
+                  <Link
+                    href="/settings"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-purple-900/20 flex items-center"
+                  >
+                    <Settings className="mr-2 h-5 w-5" />
+                    Settings
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-[#30363d]"
+                    className="flex items-center w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-purple-900/20"
                   >
                     <LogOut className="mr-2 h-5 w-5" />
                     Sign out
@@ -213,7 +273,7 @@ export function Navbar() {
               ) : (
                 <button
                   onClick={handleLogin}
-                  className="flex items-center w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-[#30363d]"
+                  className="flex items-center w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white bg-purple-600/80 hover:bg-purple-700"
                 >
                   <Github className="mr-2 h-5 w-5" />
                   Sign in with GitHub
