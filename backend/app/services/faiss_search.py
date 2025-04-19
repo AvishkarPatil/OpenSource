@@ -1,6 +1,6 @@
 import requests
 from sentence_transformers import SentenceTransformer
-import faiss
+import faiss, re
 import numpy as np
 import json
 from typing import List, Dict, Any, Optional
@@ -154,6 +154,10 @@ def format_issues_json(issues: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     logger.info("Formatting issues for JSON output")
     results = []
     for issue in issues:
+        body = issue.get("body", "")
+        cleaned_body = re.sub(r"\s+", " ", body).strip()
+        short_description = (cleaned_body[:120] + "...") if len(cleaned_body) > 120 else cleaned_body
+
         results.append({
             "issue_id": issue.get("id"),
             "issue_url": issue.get("html_url"),
@@ -162,8 +166,10 @@ def format_issues_json(issues: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             "created_at": issue.get("created_at"),
             "user_login": issue.get("user", {}).get("login"),
             "labels": [label.get("name") for label in issue.get("labels", [])],
-            "similarity_score": issue.get("similarity_score", 0.0)
+            "similarity_score": issue.get("similarity_score", 0.0),
+            "short_description": short_description
         })
+
     return results
 
 

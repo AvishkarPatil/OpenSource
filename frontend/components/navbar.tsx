@@ -1,0 +1,228 @@
+"use client"
+
+import Link from "next/link"
+import { useAuth } from "@/context/auth-context"
+import { Github, Menu, X, Search, Bell, LogOut } from "lucide-react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+
+export function Navbar() {
+  const { user, isAuthenticated, logout } = useAuth()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const router = useRouter()
+
+  const handleLogout = () => {
+    // Instead of trying to fetch directly, redirect to the backend logout endpoint
+    // The backend will clear the session and redirect back to the frontend
+    window.location.href = "http://localhost:8000/api/v1/auth/logout";
+  };
+
+  const handleLogin = () => {
+    // Redirect to the backend login endpoint to start the GitHub OAuth flow
+    window.location.href = "http://localhost:8000/api/v1/auth/login";
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  return (
+    <nav className="bg-[#161b22] border-b border-[#30363d]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <div className="flex-shrink-0 flex items-center">
+              <Link href="/" className="text-white font-bold text-xl">
+                IssueMatch
+              </Link>
+            </div>
+            <div className="hidden sm:ml-10 sm:flex sm:space-x-8">
+              <Link
+                href="/match"
+                className="border-transparent text-gray-300 hover:border-purple-500 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Issues
+              </Link>
+              <Link
+                href="/explore"
+                className="border-transparent text-gray-300 hover:border-purple-500 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Explore
+              </Link>
+              <Link
+                href="/about"
+                className="border-transparent text-gray-300 hover:border-purple-500 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                About
+              </Link>
+            </div>
+          </div>
+
+          <div className="hidden sm:flex sm:items-center sm:space-x-4">
+            {/* Search Bar */}
+            <form onSubmit={handleSearch} className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search issues"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-[#0d1117] text-sm text-white rounded-full pl-10 pr-4 py-1.5 border border-[#30363d] focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 w-48"
+              />
+            </form>
+
+            {/* Notification Icon */}
+            <button className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-[#30363d]">
+              <Bell className="h-5 w-5" />
+            </button>
+
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                {/* Profile Link */}
+                <Link href="/profile" className="flex items-center space-x-2 text-gray-300 hover:text-white">
+                  {user?.avatar_url && (
+                    <img
+                      className="h-8 w-8 rounded-full"
+                      src={user.avatar_url}
+                      alt={`${user.login}'s avatar`}
+                    />
+                  )}
+                  <span className="text-sm">{user?.login}</span>
+                </Link>
+
+                {/* Logout Button */}
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-[#30363d]"
+                  title="Sign out"
+                >
+                  <LogOut className="h-5 w-5" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleLogin}
+                className="text-gray-300 hover:text-white flex items-center text-sm font-medium bg-[#238636] hover:bg-[#2ea043] px-3 py-1.5 rounded-md"
+              >
+                <Github className="mr-1.5 h-4 w-4" />
+                Sign in
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center sm:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-[#30363d] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+            >
+              <span className="sr-only">Open main menu</span>
+              {mobileMenuOpen ? (
+                <X className="block h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Menu className="block h-6 w-6" aria-hidden="true" />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <div className="sm:hidden">
+          <div className="pt-2 pb-3 space-y-1">
+            <Link
+              href="/"
+              className="text-gray-300 hover:bg-[#30363d] hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Issues
+            </Link>
+            <Link
+              href="/explore"
+              className="text-gray-300 hover:bg-[#30363d] hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Explore
+            </Link>
+            <Link
+              href="/about"
+              className="text-gray-300 hover:bg-[#30363d] hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              About
+            </Link>
+
+            {/* Mobile Search */}
+            <form onSubmit={handleSearch} className="px-3 py-2">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-4 w-4 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search issues"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="bg-[#0d1117] text-sm text-white rounded-md pl-10 pr-4 py-2 border border-[#30363d] focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 w-full"
+                />
+              </div>
+            </form>
+          </div>
+
+          <div className="pt-4 pb-3 border-t border-[#30363d]">
+            {isAuthenticated ? (
+              <div className="flex items-center px-5">
+                {user?.avatar_url && (
+                  <div className="flex-shrink-0">
+                    <img
+                      className="h-10 w-10 rounded-full"
+                      src={user.avatar_url}
+                      alt={`${user.login}'s avatar`}
+                    />
+                  </div>
+                )}
+                <div className="ml-3">
+                  <div className="text-base font-medium text-white">{user?.name || user?.login}</div>
+                  <div className="text-sm font-medium text-gray-400">{user?.login}</div>
+                </div>
+                <button className="ml-auto text-gray-400 hover:text-white p-1 rounded-full hover:bg-[#30363d]">
+                  <Bell className="h-5 w-5" />
+                </button>
+              </div>
+            ) : null}
+            <div className="mt-3 space-y-1">
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    href="/profile"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-[#30363d]"
+                  >
+                    Your Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-[#30363d]"
+                  >
+                    <LogOut className="mr-2 h-5 w-5" />
+                    Sign out
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleLogin}
+                  className="flex items-center w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-[#30363d]"
+                >
+                  <Github className="mr-2 h-5 w-5" />
+                  Sign in with GitHub
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </nav>
+  )
+}

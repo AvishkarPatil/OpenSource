@@ -3,6 +3,9 @@ from starlette.requests import Request
 from ....services import github_service
 from .auth import get_github_token
 from typing import Optional
+from httpx import AsyncClient
+import re
+from bs4 import BeautifulSoup
 
 router = APIRouter()
 
@@ -71,3 +74,4 @@ async def get_profile_text_data(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"GitHub API error: {str(e)}"
         )
+

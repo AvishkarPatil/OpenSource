@@ -25,6 +25,7 @@ class IssueResult(BaseModel):
     user_login: Optional[str] = None
     labels: Optional[List[str]] = None
     similarity_score: Optional[float] = None
+    short_description: Optional[str] = None
 
 
 class MatchResponse(BaseModel):
