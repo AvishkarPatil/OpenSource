@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai"
 import { type NextRequest, NextResponse } from "next/server"
 
-export const maxDuration = 30 // Allow streaming responses up to 30 seconds
+export const maxDuration = 30
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
 
     // Initialize Google GenAI with API key
     const ai = new GoogleGenAI({
-      apiKey: "AIzaSyD8wKklNwFT7UwgOJLhGKMN95GczygdtMw",
+      apiKey: "AIzaSyCSNgHQVtpGkihGV0S-nZTIVNfp7R6mQZs",
     })
 
     // Convert our messages to Google GenAI format

@@ -112,7 +112,7 @@ export default function SkillsPage() {
           duration: 3000,
         })
         // Redirect to home or match page
-        router.push("/match")
+        router.push("/")
       } else {
         console.error("Error saving skills:", result.error);
         toast({
